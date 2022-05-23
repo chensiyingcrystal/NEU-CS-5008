@@ -10,6 +10,7 @@ typedef struct vector {
     int capacity;
 }vector_t;
 
+//construct a vector on the heap
 vector_t* makeVector(int initCapacity) {
     vector_t* vector = (vector_t*)malloc(sizeof(vector_t)); 
     if (vector == NULL) {//malloc might not always successfully allocate the memory since sometimes it might run out of memory
@@ -33,9 +34,44 @@ void freeVector(vector_t* vector) {
     }
 
     free(vector);
-    
 }
 
+int resize(vector_t* vector) {
+    if (vector == NULL) return 0;
+
+    vector->capacity *= 2;
+    //malloc a new array that doubles the size
+    int* newData = (int*)malloc(sizeof(int) * vector->capacity);
+    //copy all elements in the original vector into the new array
+    if (newData == NULL || vector->data == NULL) return 0;
+    
+    for (int i = 0; i < vector->size; i++) {
+        newData[i] = (vector->data)[i];
+    }
+    //free the original vector memory
+    free(vector->data);
+    //bound this new array to the vector
+    vector->data = newData;
+    return 1;
+}
+
+
+int push_back(vector_t* vector, int element) {
+    if (vector == NULL) return 0;
+
+    if (vector->size == vector->capacity) { //when the vector is full, we have to double it
+        resize(vector);
+        return;
+    }
+
+    (vector->data)[vector->size] = element;
+    (vector->size)++;
+}
+
+
 int main() {
+    vector_t* vector = makeVector(2);
+    freeVector(vector);
+    return 0;
 
 }
